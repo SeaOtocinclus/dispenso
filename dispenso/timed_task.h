@@ -104,7 +104,7 @@ class TimedTask {
       double period = 0.0,
       size_t timesToRun = 1,
       TimedTaskType type = TimedTaskType::kNormal)
-      : impl_(std::make_shared<detail::TimedTaskImpl>(
+      : impl_(std::make_unique<detail::TimedTaskImpl>(
             timesToRun,
             nextRunAbs,
             period,
@@ -112,7 +112,7 @@ class TimedTask {
             sched,
             type == TimedTaskType::kSteady)) {}
 
-  std::shared_ptr<detail::TimedTaskImpl> impl_;
+  std::unique_ptr<detail::TimedTaskImpl> impl_;
 
   friend class TimedTaskScheduler;
 }; // namespace dispenso
@@ -168,7 +168,7 @@ class TimedTaskScheduler {
       size_t timesToRun = 1,
       TimedTaskType type = TimedTaskType::kNormal) {
     TimedTask task(sched, std::forward<F>(func), nextRunAbs, period, timesToRun, type);
-    addTimedTask(task.impl_);
+    addTimedTask(std::move(task.impl_));
     return task;
   }
 
@@ -278,7 +278,7 @@ class TimedTaskScheduler {
   static double toPeriod(const std::chrono::duration<Rep, Period>& period) {
     return std::chrono::duration<double>(period).count();
   }
-  DISPENSO_DLL_ACCESS void addTimedTask(std::shared_ptr<detail::TimedTaskImpl> task);
+  DISPENSO_DLL_ACCESS void addTimedTask(std::unique_ptr<detail::TimedTaskImpl> task);
   void timeQueueRunLoop();
 
   void kickOffTask(std::shared_ptr<detail::TimedTaskImpl> next, double curTime);
