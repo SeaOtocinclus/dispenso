@@ -34,7 +34,7 @@ find_package(Threads REQUIRED)
 target_link_libraries(dispenso PUBLIC Threads::Threads)
 
 if(WIN32)
-  target_link_libraries(dispenso PUBLIC Synchronization)
+  target_link_libraries(dispenso PUBLIC Synchronization winmm.lib)
 endif()
 
 target_compile_features(dispenso PUBLIC cxx_std_14)

@@ -102,7 +102,7 @@ void TimedTaskScheduler::timeQueueRunLoop() {
   }
 }
 
-void TimedTaskScheduler::addTimedTask(std::shared_ptr<detail::TimedTaskImpl> task) {
+void TimedTaskScheduler::addTimedTask(std::unique_ptr<detail::TimedTaskImpl> task) {
   double curTime = getTime();
   double timeRemaining;
   timeRemaining = task->nextAbsTime - curTime;
